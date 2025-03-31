@@ -36,7 +36,7 @@ To work with your own repository, you need to replace the default remote with on
 4. Choose **Public**.
 5. **Do not** initialize with a README, `.gitignore`, or license.
 6. Click **Create repository**.
-7. Copy the repository URL (it should look like `https://github.com/your-username/your-repo.git`).
+7. Copy the repository URL (it should look like `https://github.com/hamzzy/django-library-tracking-system`).
 
 #### 🔧 **Replace the Default Git Remote**
 Run the following commands to rename the existing remote and add your newly created repository:
