@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.utils import timezone
+from datetime import timedelta
 class Author(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -41,6 +42,27 @@ class Loan(models.Model):
     loan_date = models.DateField(auto_now_add=True)
     return_date = models.DateField(null=True, blank=True)
     is_returned = models.BooleanField(default=False)
+    due_date = models.DateField(null =True, blank=True)
 
     def __str__(self):
         return f"{self.book.title} loaned to {self.member.user.username}"
+    def save(self, *args, **kwargs):
+        if not  self.due_date and not self.pk:
+            self.due_date = timezone.now().date() + timedelta(days=14)
+    def is_overdue(self):
+        return  not self.is_returned and self.due_date < timezone.now().date()
+    
+    def extend_due_date (self,days):
+         if self.is_returned:
+             raise ValueError("cannot extend due date for books")
+         
+         if  self.is_overdue():
+           return ValueError("cannot extend due date for overdue books")
+         
+         if days <=0:
+             raise ValueError("addtional days must be positive")
+         
+         self.due_date = self.due_date + timedelta(days= days)
+         self.save(update_fields=['due_date'])
+         return self.due_date
+        
